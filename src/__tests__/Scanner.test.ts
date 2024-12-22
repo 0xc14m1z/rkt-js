@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, test } from "vitest";
 import { StringReader } from "../StringReader";
 import { Scanner } from "../Scanner";
 import {
@@ -7,6 +7,7 @@ import {
   EndOfFileToken,
   EqualToken,
   GreaterThanToken,
+  IdentifierToken,
   IllegalToken,
   LowerThanToken,
   MinusToken,
@@ -127,6 +128,23 @@ describe("Scanner", () => {
         expect(literal.numericValue).toBe(0.1234);
       });
     });
+  });
+
+  describe("identifiers", () => {
+    test.each(["i", "identifier", "_identifier", "id3nt1f1er", "__id_nt_f__r__", "i0123", "_0123"])(
+      'matches "%s" as valid identifier',
+      (tested: string) => {
+        const tokens = getTokens(`( ${tested} )`);
+
+        expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
+
+        expect(tokens[1]).toBeInstanceOf(IdentifierToken);
+        const identifier = tokens[1] as IdentifierToken;
+        expect(identifier.value).toBe(tested);
+
+        expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
+      },
+    );
   });
 
   describe("illegal tokens", () => {

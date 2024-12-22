@@ -178,7 +178,7 @@ export class Scanner {
     let identifier = this.#character!;
 
     while ((this.#character = this.#reader.read())) {
-      if (this.#canBeIdentifier(identifier)) {
+      if (this.#canBeIdentifier(this.#character)) {
         identifier += this.#character;
       } else {
         this.#reader.rollback();
