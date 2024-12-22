@@ -1,0 +1,28 @@
+{
+  "name": "rktjs",
+  "version": "1.0.0",
+  "description": "Racket to JavaScript transpiler",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "compile": "tsc --noEmit",
+    "prebuild": "rimraf dist",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xc14m1z/rkt-js.git"
+  },
+  "author": "Luca Ramundo <luca@ramundo.dev>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0xc14m1z/rkt-js/issues"
+  },
+  "homepage": "https://github.com/0xc14m1z/rkt-js#readme",
+  "devDependencies": {
+    "rimraf": "6.0.1",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}
