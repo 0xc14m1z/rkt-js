@@ -17,25 +17,25 @@ import {
   SingleQuoteToken,
   SlashToken,
   StringLiteralToken,
+  Token,
 } from "../Token";
 
 describe("Scanner", () => {
-  it("appends the end of file token", () => {
-    const input = "";
+  function getTokens(input: string): Token[] {
     const reader = new StringReader(input);
     const scanner = new Scanner(reader);
-    const tokens = scanner.scan();
+    return scanner.scan();
+  }
 
+  it("appends the end of file token", () => {
+    const tokens = getTokens("");
     expect(tokens).toHaveLength(1);
     expect(tokens.at(-1)).toBeInstanceOf(EndOfFileToken);
   });
 
   describe("simple tokens", () => {
     it("matches simple tokens", () => {
-      const input = "()+-*/=<>\n'";
-      const reader = new StringReader(input);
-      const scanner = new Scanner(reader);
-      const tokens = scanner.scan();
+      const tokens = getTokens("()+-*/=<>\n'");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
@@ -51,10 +51,7 @@ describe("Scanner", () => {
     });
 
     it("skips irrelevant white spaces", () => {
-      const input = "(   )\t+\r-\n'";
-      const reader = new StringReader(input);
-      const scanner = new Scanner(reader);
-      const tokens = scanner.scan();
+      const tokens = getTokens("(   )\t+\r-\n'");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
@@ -68,10 +65,7 @@ describe("Scanner", () => {
   describe("literals", () => {
     describe("string literals", () => {
       it("matches an empty string", () => {
-        const input = '""';
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens('""');
 
         const literal = tokens[0];
         expect(literal).toBeInstanceOf(StringLiteralToken);
@@ -79,10 +73,7 @@ describe("Scanner", () => {
       });
 
       it("matches a non empty string", () => {
-        const input = '"non empty string"';
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens('"non empty string"');
 
         const literal = tokens[0];
         expect(literal).toBeInstanceOf(StringLiteralToken);
@@ -92,10 +83,7 @@ describe("Scanner", () => {
 
     describe("number literals", () => {
       it("matches single digit numbers", () => {
-        const input = "1";
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens("1");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -104,10 +92,7 @@ describe("Scanner", () => {
       });
 
       it("matches floating point numbers", () => {
-        const input = "1.234";
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens("1.234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -116,10 +101,7 @@ describe("Scanner", () => {
       });
 
       it("matches negative numbers", () => {
-        const input = "-1234";
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens("-1234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -128,10 +110,7 @@ describe("Scanner", () => {
       });
 
       it("matches floating point numbers", () => {
-        const input = "1.234";
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens("1.234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -140,10 +119,7 @@ describe("Scanner", () => {
       });
 
       it("matches floating point numbers that starts with zero", () => {
-        const input = "0.1234";
-        const reader = new StringReader(input);
-        const scanner = new Scanner(reader);
-        const tokens = scanner.scan();
+        const tokens = getTokens("0.1234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -155,20 +131,14 @@ describe("Scanner", () => {
 
   describe("illegal tokens", () => {
     it("matches unterminated strings", () => {
-      const input = '"unterminated string';
-      const reader = new StringReader(input);
-      const scanner = new Scanner(reader);
-      const tokens = scanner.scan();
+      const tokens = getTokens('"unterminated string');
 
       expect(tokens[0]).toBeInstanceOf(IllegalToken);
       expect(tokens[0].value).toBe('"');
     });
 
     it("merges illegal characters", () => {
-      const input = '"valid"invalid';
-      const reader = new StringReader(input);
-      const scanner = new Scanner(reader);
-      const tokens = scanner.scan();
+      const tokens = getTokens('"valid"invalid');
 
       expect(tokens[0]).toBeInstanceOf(StringLiteralToken);
 
@@ -177,10 +147,7 @@ describe("Scanner", () => {
     });
 
     it("catch multiple dots in numbers", () => {
-      const input = "1.234.567";
-      const reader = new StringReader(input);
-      const scanner = new Scanner(reader);
-      const tokens = scanner.scan();
+      const tokens = getTokens("1.234.567");
 
       expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
       const literal = tokens[0] as NumberLiteralToken;

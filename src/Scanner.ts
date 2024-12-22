@@ -16,6 +16,7 @@ import {
   StringLiteralToken,
   IllegalToken,
   NumberLiteralToken,
+  IdentifierToken,
 } from "./Token";
 
 export class Scanner {
@@ -87,6 +88,9 @@ export class Scanner {
           if (this.#isDigit(this.#character)) {
             const number = this.#consumeNumberLiteral();
             token = new NumberLiteralToken(number);
+          } else if (this.#canStartIdentifier(this.#character)) {
+            const identifier = this.#consumeIdentifier();
+            token = new IdentifierToken(identifier);
           } else {
             const lastToken = tokens.at(-1);
 
@@ -151,5 +155,37 @@ export class Scanner {
     }
 
     return number;
+  }
+
+  #canStartIdentifier(character: string | null): boolean {
+    if (character === null) return false;
+
+    const initial = character.charCodeAt(0);
+
+    const a = "a".charCodeAt(0);
+    const z = "z".charCodeAt(0);
+    const A = "A".charCodeAt(0);
+    const Z = "Z".charCodeAt(0);
+
+    return character === "_" || (initial >= a && initial <= z) || (initial >= A && initial <= Z);
+  }
+
+  #canBeIdentifier(character: string | null): boolean {
+    return this.#canStartIdentifier(character) || this.#isDigit(character);
+  }
+
+  #consumeIdentifier(): string {
+    let identifier = this.#character!;
+
+    while ((this.#character = this.#reader.read())) {
+      if (this.#canBeIdentifier(identifier)) {
+        identifier += this.#character;
+      } else {
+        this.#reader.rollback();
+        break;
+      }
+    }
+
+    return identifier;
   }
 }
