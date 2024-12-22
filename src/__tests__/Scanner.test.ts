@@ -9,6 +9,7 @@ import {
   GreaterThanToken,
   IdentifierToken,
   IllegalToken,
+  KeywordTokens,
   LowerThanToken,
   MinusToken,
   NewLineToken,
@@ -139,6 +140,23 @@ describe("Scanner", () => {
         expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
 
         expect(tokens[1]).toBeInstanceOf(IdentifierToken);
+        const identifier = tokens[1] as IdentifierToken;
+        expect(identifier.value).toBe(tested);
+
+        expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
+      },
+    );
+  });
+
+  describe("keywords", () => {
+    test.each(Object.entries(KeywordTokens))(
+      'matches "%s" as valid a keyword',
+      (tested: string, klass) => {
+        const tokens = getTokens(`( ${tested} )`);
+
+        expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
+
+        expect(tokens[1]).toBeInstanceOf(klass);
         const identifier = tokens[1] as IdentifierToken;
         expect(identifier.value).toBe(tested);
 
