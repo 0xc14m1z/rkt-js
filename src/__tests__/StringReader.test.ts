@@ -11,5 +11,5 @@ describe("StringReader", () => {
     expect(reader.read()).toBe("c");
     expect(reader.read()).toBe("d");
     expect(reader.read()).toBe(null);
-  })
-})
+  });
+});
