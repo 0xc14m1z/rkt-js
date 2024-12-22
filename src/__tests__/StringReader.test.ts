@@ -19,6 +19,7 @@ describe("StringReader", () => {
 
     expect(reader.peek()).toBe("a");
     expect(reader.peek()).toBe("a");
-    expect(reader.peek()).toBe("a");
+    expect(reader.read()).toBe("a");
+    expect(reader.peek()).toBe("b");
   });
 });
