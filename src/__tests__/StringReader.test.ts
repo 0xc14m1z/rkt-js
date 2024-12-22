@@ -22,4 +22,23 @@ describe("StringReader", () => {
     expect(reader.read()).toBe("a");
     expect(reader.peek()).toBe("b");
   });
+
+  it("rolls back from the current position preventing underflowing", () => {
+    const input = "abcd";
+    const reader = new StringReader(input);
+
+    expect(reader.read()).toBe("a");
+    expect(reader.read()).toBe("b");
+    expect(reader.peek()).toBe("c");
+    reader.rollback();
+    expect(reader.peek()).toBe("b");
+    expect(reader.read()).toBe("b");
+
+    reader.rollback();
+    reader.rollback();
+    reader.rollback();
+    reader.rollback();
+
+    expect(reader.peek()).toBe("a");
+  });
 });

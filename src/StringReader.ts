@@ -15,4 +15,8 @@ export class StringReader implements IReader {
     if (this.#position >= this.input.length) return null;
     return this.input.charAt(this.#position);
   }
+
+  rollback(): void {
+    this.#position = Math.max(0, this.#position - 1);
+  }
 }
