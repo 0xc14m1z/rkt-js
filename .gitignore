@@ -131,3 +131,4 @@ dist
 
 #  WebStorm configuration
 .idea
+.run
