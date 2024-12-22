@@ -138,12 +138,12 @@ describe("Scanner", () => {
     });
 
     it("merges illegal characters", () => {
-      const tokens = getTokens('"valid"invalid');
+      const tokens = getTokens('"valid" ???!!!');
 
       expect(tokens[0]).toBeInstanceOf(StringLiteralToken);
 
       expect(tokens[1]).toBeInstanceOf(IllegalToken);
-      expect(tokens[1].value).toBe("invalid");
+      expect(tokens[1].value).toBe("???!!!");
     });
 
     it("catch multiple dots in numbers", () => {
