@@ -24,7 +24,7 @@ export abstract class Token {
   }
 }
 
-function SimpleToken(kind: TokenKind, value: string) {
+function SyntaxToken(kind: TokenKind, value: string) {
   return class extends Token {
     constructor() {
       super(kind, value);
@@ -32,9 +32,9 @@ function SimpleToken(kind: TokenKind, value: string) {
   };
 }
 
-export class OpenParenthesisToken extends SimpleToken(TokenKind.OpenParenthesis, "(") {}
-export class ClosedParenthesisToken extends SimpleToken(TokenKind.ClosedParenthesis, "(") {}
-export class SingleQuoteToken extends SimpleToken(TokenKind.SingleQuote, "'") {}
+export class OpenParenthesisToken extends SyntaxToken(TokenKind.OpenParenthesis, "(") {}
+export class ClosedParenthesisToken extends SyntaxToken(TokenKind.ClosedParenthesis, "(") {}
+export class SingleQuoteToken extends SyntaxToken(TokenKind.SingleQuote, "'") {}
 
 export class IllegalToken extends Token {
   constructor(value: string) {
@@ -46,9 +46,9 @@ export class IllegalToken extends Token {
   }
 }
 
-export class EndOfFileToken extends SimpleToken(TokenKind.EndOfFile, "") {}
+export class EndOfFileToken extends SyntaxToken(TokenKind.EndOfFile, "") {}
 
-function LiteralToken(kind: TokenKind) {
+function UserToken(kind: TokenKind) {
   return class extends Token {
     constructor(value: string) {
       super(kind, value);
@@ -56,15 +56,11 @@ function LiteralToken(kind: TokenKind) {
   };
 }
 
-export class StringLiteralToken extends LiteralToken(TokenKind.StringLiteral) {}
-export class NumberLiteralToken extends LiteralToken(TokenKind.NumberLiteral) {
+export class StringLiteralToken extends UserToken(TokenKind.StringLiteral) {}
+export class NumberLiteralToken extends UserToken(TokenKind.NumberLiteral) {
   get numericValue(): number {
     return Number(this.value);
   }
 }
 
-export class IdentifierToken extends Token {
-  constructor(symbol: string) {
-    super(TokenKind.Identifier, symbol);
-  }
-}
+export class IdentifierToken extends UserToken(TokenKind.Identifier) {}
