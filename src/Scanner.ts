@@ -17,8 +17,6 @@ import {
   IllegalToken,
   NumberLiteralToken,
   IdentifierToken,
-  KeywordTokens,
-  Keyword,
 } from "./Token";
 
 export class Scanner {
@@ -92,12 +90,7 @@ export class Scanner {
             token = new NumberLiteralToken(number);
           } else if (this.#canStartIdentifier(this.#character)) {
             const identifier = this.#consumeIdentifier();
-
-            if (this.#isKeyword(identifier)) {
-              token = new KeywordTokens[identifier]();
-            } else {
-              token = new IdentifierToken(identifier);
-            }
+            token = new IdentifierToken(identifier);
           } else {
             const lastToken = tokens.at(-1);
 
@@ -194,9 +187,5 @@ export class Scanner {
     }
 
     return identifier;
-  }
-
-  #isKeyword(identifier: string): identifier is Keyword {
-    return Object.values(Keyword).includes(identifier as any);
   }
 }

@@ -1,7 +1,6 @@
 export enum TokenKind {
   OpenParenthesis,
   ClosedParenthesis,
-  Keyword,
   Identifier,
   StringLiteral,
   NumberLiteral,
@@ -86,24 +85,3 @@ export class IdentifierToken extends Token {
     super(TokenKind.Identifier, symbol);
   }
 }
-
-export enum Keyword {
-  Define = "define",
-  Lambda = "lambda",
-}
-
-function KeywordToken(keyword: Keyword) {
-  return class extends Token {
-    constructor() {
-      super(TokenKind.Keyword, keyword);
-    }
-  };
-}
-
-export class DefineKeywordToken extends KeywordToken(Keyword.Define) {}
-export class LambdaKeywordToken extends KeywordToken(Keyword.Lambda) {}
-
-export const KeywordTokens = {
-  [Keyword.Define]: DefineKeywordToken,
-  [Keyword.Lambda]: LambdaKeywordToken,
-} satisfies Record<Keyword, any>;

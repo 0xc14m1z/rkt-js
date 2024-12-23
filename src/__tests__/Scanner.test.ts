@@ -9,7 +9,6 @@ import {
   GreaterThanToken,
   IdentifierToken,
   IllegalToken,
-  KeywordTokens,
   LowerThanToken,
   MinusToken,
   NewLineToken,
@@ -132,37 +131,26 @@ describe("Scanner", () => {
   });
 
   describe("identifiers", () => {
-    test.each(["i", "identifier", "_identifier", "id3nt1f1er", "__id_nt_f__r__", "i0123", "_0123"])(
-      'matches "%s" as valid identifier',
-      (tested: string) => {
-        const tokens = getTokens(`( ${tested} )`);
+    test.each([
+      "i",
+      "identifier",
+      "_identifier",
+      "id3nt1f1er",
+      "__id_nt_f__r__",
+      "i0123",
+      "_0123",
+      "define",
+    ])('matches "%s" as valid identifier', (tested: string) => {
+      const tokens = getTokens(`( ${tested} )`);
 
-        expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
+      expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
 
-        expect(tokens[1]).toBeInstanceOf(IdentifierToken);
-        const identifier = tokens[1] as IdentifierToken;
-        expect(identifier.value).toBe(tested);
+      expect(tokens[1]).toBeInstanceOf(IdentifierToken);
+      const identifier = tokens[1] as IdentifierToken;
+      expect(identifier.value).toBe(tested);
 
-        expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
-      },
-    );
-  });
-
-  describe("keywords", () => {
-    test.each(Object.entries(KeywordTokens))(
-      'matches "%s" as valid a keyword',
-      (tested: string, klass) => {
-        const tokens = getTokens(`( ${tested} )`);
-
-        expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
-
-        expect(tokens[1]).toBeInstanceOf(klass);
-        const identifier = tokens[1] as IdentifierToken;
-        expect(identifier.value).toBe(tested);
-
-        expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
-      },
-    );
+      expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
+    });
   });
 
   describe("illegal tokens", () => {
