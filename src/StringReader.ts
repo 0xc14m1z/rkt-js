@@ -1,9 +1,12 @@
 import { IReader } from "./IReader";
 
 export class StringReader implements IReader<string> {
+  readonly #input: string;
   #position: number = 0;
 
-  constructor(private readonly input: string) {}
+  constructor(input: string) {
+    this.#input = input;
+  }
 
   read(): string | null {
     const character = this.peek();
@@ -12,8 +15,8 @@ export class StringReader implements IReader<string> {
   }
 
   peek(): string | null {
-    if (this.#position >= this.input.length) return null;
-    return this.input.charAt(this.#position);
+    if (this.#position >= this.#input.length) return null;
+    return this.#input.charAt(this.#position);
   }
 
   rollback(): void {
