@@ -16,10 +16,10 @@ import {
 } from "./Token";
 
 export class Scanner {
-  readonly #reader: IReader;
+  readonly #reader: IReader<string>;
   #character: string | null = null;
 
-  constructor(reader: IReader) {
+  constructor(reader: IReader<string>) {
     this.#reader = reader;
   }
 

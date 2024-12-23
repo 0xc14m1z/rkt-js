@@ -1,5 +1,5 @@
-export interface IReader {
-  read(): string | null;
-  peek(): string | null;
+export interface IReader<T> {
+  read(): T | null;
+  peek(): T | null;
   rollback(): void;
 }

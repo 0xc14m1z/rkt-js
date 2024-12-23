@@ -1,6 +1,6 @@
 import { IReader } from "./IReader";
 
-export class StringReader implements IReader {
+export class StringReader implements IReader<string> {
   #position: number = 0;
 
   constructor(private readonly input: string) {}
