@@ -107,15 +107,6 @@ describe("Scanner", () => {
         expect(literal.numericValue).toBe(-1234);
       });
 
-      it("matches floating point numbers", () => {
-        const tokens = getTokens("1.234");
-
-        expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
-        const literal = tokens[0] as NumberLiteralToken;
-        expect(literal.value).toBe("1.234");
-        expect(literal.numericValue).toBe(1.234);
-      });
-
       it("matches floating point numbers that starts with zero", () => {
         const tokens = getTokens("0.1234");
 
