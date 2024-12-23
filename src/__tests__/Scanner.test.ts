@@ -101,6 +101,13 @@ describe("Scanner", () => {
         expect(literal.value).toBe("0.1234");
         expect(literal.numericValue).toBe(0.1234);
       });
+
+      it("stops at non-digit characters", () => {
+        const tokens = getTokens("123)");
+
+        expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
+        expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
+      });
     });
   });
 

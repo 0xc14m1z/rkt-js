@@ -110,15 +110,11 @@ export class Scanner {
     while (this.#consumeCharacter()) {
       if (this.#isDigit(this.#character)) {
         number += this.#character;
-      } else if (this.#character === ".") {
-        if (!isFloatingPoint) {
-          number += this.#character;
-          isFloatingPoint = true;
-        } else {
-          this.#reader.rollback();
-          break;
-        }
+      } else if (this.#character === "." && !isFloatingPoint) {
+        number += this.#character;
+        isFloatingPoint = true;
       } else {
+        this.#reader.rollback();
         break;
       }
     }
