@@ -1,6 +1,4 @@
 import { describe, expect, it, test } from "vitest";
-import { StringReader } from "../StringReader";
-import { Scanner } from "../Scanner";
 import {
   ClosedBracketToken,
   ClosedParenthesisToken,
@@ -14,25 +12,19 @@ import {
   OpenParenthesisToken,
   SingleQuoteToken,
   StringLiteralToken,
-  Token,
 } from "../Token";
+import { scan } from "./utils";
 
 describe("Scanner", () => {
-  function getTokens(input: string): Token[] {
-    const reader = new StringReader(input);
-    const scanner = new Scanner(reader);
-    return scanner.scan();
-  }
-
   it("appends the end of file token", () => {
-    const tokens = getTokens("");
+    const tokens = scan("");
     expect(tokens).toHaveLength(1);
     expect(tokens.at(-1)).toBeInstanceOf(EndOfFileToken);
   });
 
   describe("simple tokens", () => {
     it("matches simple tokens", () => {
-      const tokens = getTokens("()'[]");
+      const tokens = scan("()'[]");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
@@ -42,7 +34,7 @@ describe("Scanner", () => {
     });
 
     it("skips irrelevant white spaces", () => {
-      const tokens = getTokens("(   )\t+\rif\n'");
+      const tokens = scan("(   )\t+\rif\n'");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
@@ -55,7 +47,7 @@ describe("Scanner", () => {
   describe("literals", () => {
     describe("string literals", () => {
       it("matches an empty string", () => {
-        const tokens = getTokens('""');
+        const tokens = scan('""');
 
         const literal = tokens[0];
         expect(literal).toBeInstanceOf(StringLiteralToken);
@@ -63,7 +55,7 @@ describe("Scanner", () => {
       });
 
       it("matches a non empty string", () => {
-        const tokens = getTokens('"non empty string"');
+        const tokens = scan('"non empty string"');
 
         const literal = tokens[0];
         expect(literal).toBeInstanceOf(StringLiteralToken);
@@ -73,7 +65,7 @@ describe("Scanner", () => {
 
     describe("number literals", () => {
       it("matches single digit numbers", () => {
-        const tokens = getTokens("1");
+        const tokens = scan("1");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -82,7 +74,7 @@ describe("Scanner", () => {
       });
 
       it("matches floating point numbers", () => {
-        const tokens = getTokens("1.234");
+        const tokens = scan("1.234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -91,7 +83,7 @@ describe("Scanner", () => {
       });
 
       it("matches negative numbers", () => {
-        const tokens = getTokens("-1234");
+        const tokens = scan("-1234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -100,7 +92,7 @@ describe("Scanner", () => {
       });
 
       it("matches floating point numbers that starts with zero", () => {
-        const tokens = getTokens("0.1234");
+        const tokens = scan("0.1234");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         const literal = tokens[0] as NumberLiteralToken;
@@ -109,7 +101,7 @@ describe("Scanner", () => {
       });
 
       it("stops at non-digit characters", () => {
-        const tokens = getTokens("123)");
+        const tokens = scan("123)");
 
         expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
         expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
@@ -130,7 +122,7 @@ describe("Scanner", () => {
       "+/-",
       "'atom",
     ])('matches "%s" as valid identifier', (tested: string) => {
-      const tokens = getTokens(`( ${tested} )`);
+      const tokens = scan(`( ${tested} )`);
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
 
@@ -146,7 +138,7 @@ describe("Scanner", () => {
     test.each(["#lang", "#null", "#custom-macro"])(
       'matches "%s" as valid macro',
       (tested: string) => {
-        const tokens = getTokens(`( ${tested} )`);
+        const tokens = scan(`( ${tested} )`);
 
         expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
 
@@ -161,7 +153,7 @@ describe("Scanner", () => {
 
   describe("comments", () => {
     it("matches a comment", () => {
-      const tokens = getTokens("(+ 1 2) ; this is a comment");
+      const tokens = scan("(+ 1 2) ; this is a comment");
 
       expect(tokens[5]).toBeInstanceOf(CommentToken);
       const comment = tokens[5] as CommentToken;
@@ -169,7 +161,7 @@ describe("Scanner", () => {
     });
 
     it("matches consecutive comments", () => {
-      const tokens = getTokens("(+ 1 2) ; this is a comment\n;;and this is another one");
+      const tokens = scan("(+ 1 2) ; this is a comment\n;;and this is another one");
 
       expect(tokens[5]).toBeInstanceOf(CommentToken);
       expect(tokens[6]).toBeInstanceOf(CommentToken);
@@ -184,14 +176,14 @@ describe("Scanner", () => {
 
   describe("illegal tokens", () => {
     it("matches unterminated strings", () => {
-      const tokens = getTokens('"unterminated string');
+      const tokens = scan('"unterminated string');
 
       expect(tokens[0]).toBeInstanceOf(IllegalToken);
       expect(tokens[0].value).toBe('"');
     });
 
     it("matches unnamed macros", () => {
-      const tokens = getTokens("# ; unnamed macro");
+      const tokens = scan("# ; unnamed macro");
 
       expect(tokens[0]).toBeInstanceOf(IllegalToken);
       expect(tokens[0].value).toBe("#");
