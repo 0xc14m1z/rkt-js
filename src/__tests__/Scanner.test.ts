@@ -2,20 +2,13 @@ import { describe, expect, it, test } from "vitest";
 import { StringReader } from "../StringReader";
 import { Scanner } from "../Scanner";
 import {
-  AsteriskToken,
   ClosedParenthesisToken,
   EndOfFileToken,
-  EqualToken,
-  GreaterThanToken,
   IdentifierToken,
   IllegalToken,
-  LowerThanToken,
-  MinusToken,
   NumberLiteralToken,
   OpenParenthesisToken,
-  PlusToken,
   SingleQuoteToken,
-  SlashToken,
   StringLiteralToken,
   Token,
 } from "../Token";
@@ -35,27 +28,20 @@ describe("Scanner", () => {
 
   describe("simple tokens", () => {
     it("matches simple tokens", () => {
-      const tokens = getTokens("()+-*/=<>\n'");
+      const tokens = getTokens("()'");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
-      expect(tokens[2]).toBeInstanceOf(PlusToken);
-      expect(tokens[3]).toBeInstanceOf(MinusToken);
-      expect(tokens[4]).toBeInstanceOf(AsteriskToken);
-      expect(tokens[5]).toBeInstanceOf(SlashToken);
-      expect(tokens[6]).toBeInstanceOf(EqualToken);
-      expect(tokens[7]).toBeInstanceOf(LowerThanToken);
-      expect(tokens[8]).toBeInstanceOf(GreaterThanToken);
-      expect(tokens[9]).toBeInstanceOf(SingleQuoteToken);
+      expect(tokens[2]).toBeInstanceOf(SingleQuoteToken);
     });
 
     it("skips irrelevant white spaces", () => {
-      const tokens = getTokens("(   )\t+\r-\n'");
+      const tokens = getTokens("(   )\t+\rif\n'");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
-      expect(tokens[2]).toBeInstanceOf(PlusToken);
-      expect(tokens[3]).toBeInstanceOf(MinusToken);
+      expect(tokens[2]).toBeInstanceOf(IdentifierToken);
+      expect(tokens[3]).toBeInstanceOf(IdentifierToken);
       expect(tokens[4]).toBeInstanceOf(SingleQuoteToken);
     });
   });
@@ -123,11 +109,12 @@ describe("Scanner", () => {
       "i",
       "identifier",
       "_identifier",
-      "id3nt1f1er",
-      "__id_nt_f__r__",
-      "i0123",
-      "_0123",
+      "+",
+      "+inf.0",
+      "equal?",
+      "char->int",
       "define",
+      "+/-",
     ])('matches "%s" as valid identifier', (tested: string) => {
       const tokens = getTokens(`( ${tested} )`);
 
@@ -147,27 +134,6 @@ describe("Scanner", () => {
 
       expect(tokens[0]).toBeInstanceOf(IllegalToken);
       expect(tokens[0].value).toBe('"');
-    });
-
-    it("merges illegal characters", () => {
-      const tokens = getTokens('"valid" ???!!!');
-
-      expect(tokens[0]).toBeInstanceOf(StringLiteralToken);
-
-      expect(tokens[1]).toBeInstanceOf(IllegalToken);
-      expect(tokens[1].value).toBe("???!!!");
-    });
-
-    it("catch multiple dots in numbers", () => {
-      const tokens = getTokens("1.234.567");
-
-      expect(tokens[0]).toBeInstanceOf(NumberLiteralToken);
-      const literal = tokens[0] as NumberLiteralToken;
-      expect(literal.value).toBe("1.234");
-      expect(literal.numericValue).toBe(1.234);
-
-      expect(tokens[1]).toBeInstanceOf(IllegalToken);
-      expect(tokens[1].value).toBe(".");
     });
   });
 });

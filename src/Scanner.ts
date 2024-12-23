@@ -4,13 +4,6 @@ import {
   Token,
   OpenParenthesisToken,
   SingleQuoteToken,
-  PlusToken,
-  MinusToken,
-  AsteriskToken,
-  SlashToken,
-  LowerThanToken,
-  GreaterThanToken,
-  EqualToken,
   EndOfFileToken,
   StringLiteralToken,
   IllegalToken,
@@ -45,32 +38,6 @@ export class Scanner {
         case "'":
           token = new SingleQuoteToken();
           break;
-        case "+":
-          token = new PlusToken();
-          break;
-        case "-":
-          if (this.#isDigit(this.#reader.peek())) {
-            const number = this.#consumeNumberLiteral();
-            token = new NumberLiteralToken(number);
-          } else {
-            token = new MinusToken();
-          }
-          break;
-        case "*":
-          token = new AsteriskToken();
-          break;
-        case "/":
-          token = new SlashToken();
-          break;
-        case "=":
-          token = new EqualToken();
-          break;
-        case "<":
-          token = new LowerThanToken();
-          break;
-        case ">":
-          token = new GreaterThanToken();
-          break;
         case '"':
           const string = this.#consumeStringLiteral();
           token = new StringLiteralToken(string);
@@ -81,20 +48,16 @@ export class Scanner {
 
           break;
         default:
-          if (this.#isDigit(this.#character)) {
+          if (
+            this.#isDigit(this.#character) ||
+            (this.#character === "-" && this.#isDigit(this.#reader.peek()))
+          ) {
             const number = this.#consumeNumberLiteral();
             token = new NumberLiteralToken(number);
-          } else if (this.#canStartIdentifier(this.#character)) {
+          } else if (this.#canBeIdentifier(this.#character)) {
             const identifier = this.#consumeIdentifier();
             token = new IdentifierToken(identifier);
           } else {
-            const lastToken = tokens.at(-1);
-
-            if (lastToken instanceof IllegalToken) {
-              lastToken.append(this.#character);
-              continue;
-            }
-
             token = new IllegalToken(this.#character);
           }
       }
@@ -159,21 +122,11 @@ export class Scanner {
     return number;
   }
 
-  #canStartIdentifier(character: string | null): boolean {
-    if (character === null) return false;
-
-    const initial = character.charCodeAt(0);
-
-    const a = "a".charCodeAt(0);
-    const z = "z".charCodeAt(0);
-    const A = "A".charCodeAt(0);
-    const Z = "Z".charCodeAt(0);
-
-    return character === "_" || (initial >= a && initial <= z) || (initial >= A && initial <= Z);
-  }
-
   #canBeIdentifier(character: string | null): boolean {
-    return this.#canStartIdentifier(character) || this.#isDigit(character);
+    if (character === null) return false;
+    if (this.#isWhitespace(this.#character)) return false;
+    const forbidden = ["(", ")", "[", "]", "{", "}", '\"', ",", "'", "`", ";", "#", "|", "\\"];
+    return !forbidden.includes(character);
   }
 
   #consumeIdentifier(): string {

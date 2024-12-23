@@ -5,13 +5,6 @@ export enum TokenKind {
   StringLiteral,
   NumberLiteral,
   SingleQuote,
-  Plus,
-  Minus,
-  Asterisk,
-  Slash,
-  Equal,
-  LowerThan,
-  GreaterThan,
   EndOfFile,
   Illegal,
 }
@@ -42,13 +35,6 @@ function SimpleToken(kind: TokenKind, value: string) {
 export class OpenParenthesisToken extends SimpleToken(TokenKind.OpenParenthesis, "(") {}
 export class ClosedParenthesisToken extends SimpleToken(TokenKind.ClosedParenthesis, "(") {}
 export class SingleQuoteToken extends SimpleToken(TokenKind.SingleQuote, "'") {}
-export class PlusToken extends SimpleToken(TokenKind.Plus, "+") {}
-export class MinusToken extends SimpleToken(TokenKind.Minus, "-") {}
-export class AsteriskToken extends SimpleToken(TokenKind.Asterisk, "*") {}
-export class SlashToken extends SimpleToken(TokenKind.Slash, "/") {}
-export class EqualToken extends SimpleToken(TokenKind.Equal, "=") {}
-export class LowerThanToken extends SimpleToken(TokenKind.LowerThan, "<") {}
-export class GreaterThanToken extends SimpleToken(TokenKind.GreaterThan, ">") {}
 
 export class IllegalToken extends Token {
   constructor(value: string) {
