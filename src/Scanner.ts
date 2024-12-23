@@ -12,6 +12,7 @@ import {
   CommentToken,
   OpenBracketToken,
   ClosedBracketToken,
+  MacroToken,
 } from "./Token";
 
 export class Scanner {
@@ -62,6 +63,16 @@ export class Scanner {
 
           if (this.#character !== '"') {
             token = new IllegalToken('"');
+          }
+
+          break;
+        case "#":
+          const identifier = this.#consumeIdentifier();
+
+          if (identifier !== "#") {
+            token = new MacroToken(identifier);
+          } else {
+            token = new IllegalToken("#");
           }
 
           break;

@@ -8,6 +8,7 @@ import {
   EndOfFileToken,
   IdentifierToken,
   IllegalToken,
+  MacroToken,
   NumberLiteralToken,
   OpenBracketToken,
   OpenParenthesisToken,
@@ -141,6 +142,23 @@ describe("Scanner", () => {
     });
   });
 
+  describe("macros", () => {
+    test.each(["#lang", "#null", "#custom-macro"])(
+      'matches "%s" as valid macro',
+      (tested: string) => {
+        const tokens = getTokens(`( ${tested} )`);
+
+        expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
+
+        expect(tokens[1]).toBeInstanceOf(MacroToken);
+        const identifier = tokens[1] as MacroToken;
+        expect(identifier.value).toBe(tested);
+
+        expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
+      },
+    );
+  });
+
   describe("comments", () => {
     it("matches a comment", () => {
       const tokens = getTokens("(+ 1 2) ; this is a comment");
@@ -170,6 +188,13 @@ describe("Scanner", () => {
 
       expect(tokens[0]).toBeInstanceOf(IllegalToken);
       expect(tokens[0].value).toBe('"');
+    });
+
+    it("matches unnamed macros", () => {
+      const tokens = getTokens("# ; unnamed macro");
+
+      expect(tokens[0]).toBeInstanceOf(IllegalToken);
+      expect(tokens[0].value).toBe("#");
     });
   });
 });

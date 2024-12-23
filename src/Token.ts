@@ -3,6 +3,7 @@ export enum TokenKind {
   ClosedParenthesis,
   OpenBracket,
   ClosedBracket,
+  Macro,
   Identifier,
   StringLiteral,
   NumberLiteral,
@@ -68,5 +69,6 @@ export class NumberLiteralToken extends UserToken(TokenKind.NumberLiteral) {
   }
 }
 
+export class MacroToken extends UserToken(TokenKind.Macro) {}
 export class IdentifierToken extends UserToken(TokenKind.Identifier) {}
 export class CommentToken extends UserToken(TokenKind.Comment) {}
