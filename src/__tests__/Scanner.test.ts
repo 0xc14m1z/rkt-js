@@ -127,6 +127,7 @@ describe("Scanner", () => {
       "char->int",
       "define",
       "+/-",
+      "'atom",
     ])('matches "%s" as valid identifier', (tested: string) => {
       const tokens = getTokens(`( ${tested} )`);
 

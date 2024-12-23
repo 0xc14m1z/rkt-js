@@ -49,7 +49,12 @@ export class Scanner {
           token = new CommentToken(comment);
           break;
         case "'":
-          token = new SingleQuoteToken();
+          if (this.#canBeIdentifier(this.#reader.peek())) {
+            const identifier = this.#consumeIdentifier();
+            token = new IdentifierToken(identifier);
+          } else {
+            token = new SingleQuoteToken();
+          }
           break;
         case '"':
           const string = this.#consumeStringLiteral();
