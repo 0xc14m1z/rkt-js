@@ -10,6 +10,8 @@ import {
   NumberLiteralToken,
   IdentifierToken,
   CommentToken,
+  OpenBracketToken,
+  ClosedBracketToken,
 } from "./Token";
 
 export class Scanner {
@@ -35,6 +37,12 @@ export class Scanner {
           break;
         case ")":
           token = new ClosedParenthesisToken();
+          break;
+        case "[":
+          token = new OpenBracketToken();
+          break;
+        case "]":
+          token = new ClosedBracketToken();
           break;
         case ";":
           const comment = this.#consumeComment();

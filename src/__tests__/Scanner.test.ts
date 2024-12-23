@@ -2,12 +2,14 @@ import { describe, expect, it, test } from "vitest";
 import { StringReader } from "../StringReader";
 import { Scanner } from "../Scanner";
 import {
+  ClosedBracketToken,
   ClosedParenthesisToken,
   CommentToken,
   EndOfFileToken,
   IdentifierToken,
   IllegalToken,
   NumberLiteralToken,
+  OpenBracketToken,
   OpenParenthesisToken,
   SingleQuoteToken,
   StringLiteralToken,
@@ -29,11 +31,13 @@ describe("Scanner", () => {
 
   describe("simple tokens", () => {
     it("matches simple tokens", () => {
-      const tokens = getTokens("()'");
+      const tokens = getTokens("()'[]");
 
       expect(tokens[0]).toBeInstanceOf(OpenParenthesisToken);
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
       expect(tokens[2]).toBeInstanceOf(SingleQuoteToken);
+      expect(tokens[3]).toBeInstanceOf(OpenBracketToken);
+      expect(tokens[4]).toBeInstanceOf(ClosedBracketToken);
     });
 
     it("skips irrelevant white spaces", () => {

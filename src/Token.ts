@@ -1,6 +1,8 @@
 export enum TokenKind {
   OpenParenthesis,
   ClosedParenthesis,
+  OpenBracket,
+  ClosedBracket,
   Identifier,
   StringLiteral,
   NumberLiteral,
@@ -34,7 +36,9 @@ function SyntaxToken(kind: TokenKind, value: string) {
 }
 
 export class OpenParenthesisToken extends SyntaxToken(TokenKind.OpenParenthesis, "(") {}
-export class ClosedParenthesisToken extends SyntaxToken(TokenKind.ClosedParenthesis, "(") {}
+export class ClosedParenthesisToken extends SyntaxToken(TokenKind.ClosedParenthesis, ")") {}
+export class OpenBracketToken extends SyntaxToken(TokenKind.OpenBracket, "[") {}
+export class ClosedBracketToken extends SyntaxToken(TokenKind.ClosedBracket, "]") {}
 export class SingleQuoteToken extends SyntaxToken(TokenKind.SingleQuote, "'") {}
 
 export class IllegalToken extends Token {
