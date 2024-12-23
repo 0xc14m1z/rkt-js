@@ -61,6 +61,8 @@ export class Scanner {
           const string = this.#consumeStringLiteral();
           token = new StringLiteralToken(string);
 
+          // when the current character is not another double
+          // quote, it means the string is unterminated
           if (this.#character !== '"') {
             token = new IllegalToken('"');
           }
@@ -68,10 +70,10 @@ export class Scanner {
           break;
         case "#":
           const identifier = this.#consumeIdentifier();
+          token = new MacroToken(identifier);
 
-          if (identifier !== "#") {
-            token = new MacroToken(identifier);
-          } else {
+          // a macro must have a name/value after the # symbol
+          if (identifier === "#") {
             token = new IllegalToken("#");
           }
 
@@ -79,6 +81,7 @@ export class Scanner {
         default:
           if (
             this.#isDigit(this.#character) ||
+            // the next line matches negative numbers
             (this.#character === "-" && this.#isDigit(this.#reader.peek()))
           ) {
             const number = this.#consumeNumberLiteral();
