@@ -3,6 +3,7 @@ import { StringReader } from "../StringReader";
 import { Scanner } from "../Scanner";
 import {
   ClosedParenthesisToken,
+  CommentToken,
   EndOfFileToken,
   IdentifierToken,
   IllegalToken,
@@ -132,6 +133,29 @@ describe("Scanner", () => {
       expect(identifier.value).toBe(tested);
 
       expect(tokens[2]).toBeInstanceOf(ClosedParenthesisToken);
+    });
+  });
+
+  describe("comments", () => {
+    it("matches a comment", () => {
+      const tokens = getTokens("(+ 1 2) ; this is a comment");
+
+      expect(tokens[5]).toBeInstanceOf(CommentToken);
+      const comment = tokens[5] as CommentToken;
+      expect(comment.value).toBe(" this is a comment");
+    });
+
+    it("matches consecutive comments", () => {
+      const tokens = getTokens("(+ 1 2) ; this is a comment\n;;and this is another one");
+
+      expect(tokens[5]).toBeInstanceOf(CommentToken);
+      expect(tokens[6]).toBeInstanceOf(CommentToken);
+
+      const firstComment = tokens[5] as CommentToken;
+      expect(firstComment.value).toBe(" this is a comment");
+
+      const secondComment = tokens[6] as CommentToken;
+      expect(secondComment.value).toBe(";and this is another one");
     });
   });
 

@@ -9,6 +9,7 @@ import {
   IllegalToken,
   NumberLiteralToken,
   IdentifierToken,
+  CommentToken,
 } from "./Token";
 
 export class Scanner {
@@ -34,6 +35,10 @@ export class Scanner {
           break;
         case ")":
           token = new ClosedParenthesisToken();
+          break;
+        case ";":
+          const comment = this.#consumeComment();
+          token = new CommentToken(comment);
           break;
         case "'":
           token = new SingleQuoteToken();
@@ -72,6 +77,15 @@ export class Scanner {
 
   #consumeCharacter(): string | null {
     return (this.#character = this.#reader.read());
+  }
+
+  #consumeComment(): string {
+    let comment = "";
+    while (this.#consumeCharacter()) {
+      if (this.#character === "\n") break;
+      else comment += this.#character;
+    }
+    return comment;
   }
 
   #consumeStringLiteral(): string {

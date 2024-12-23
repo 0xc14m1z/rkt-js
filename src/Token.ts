@@ -5,6 +5,7 @@ export enum TokenKind {
   StringLiteral,
   NumberLiteral,
   SingleQuote,
+  Comment,
   EndOfFile,
   Illegal,
 }
@@ -64,3 +65,4 @@ export class NumberLiteralToken extends UserToken(TokenKind.NumberLiteral) {
 }
 
 export class IdentifierToken extends UserToken(TokenKind.Identifier) {}
+export class CommentToken extends UserToken(TokenKind.Comment) {}
