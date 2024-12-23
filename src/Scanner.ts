@@ -11,7 +11,6 @@ import {
   LowerThanToken,
   GreaterThanToken,
   EqualToken,
-  NewLineToken,
   EndOfFileToken,
   StringLiteralToken,
   IllegalToken,
@@ -72,9 +71,6 @@ export class Scanner {
         case ">":
           token = new GreaterThanToken();
           break;
-        case "\n":
-          token = new NewLineToken();
-          break;
         case '"':
           const string = this.#consumeStringLiteral();
           token = new StringLiteralToken(string);
@@ -120,9 +116,15 @@ export class Scanner {
     return string;
   }
 
+  #isWhitespace(character: string | null): boolean {
+    if (character === null) return false;
+    const whitespaces = [" ", "\t", "\r", "\n"];
+    return whitespaces.includes(character);
+  }
+
   #consumeWhiteSpaces(): void {
     do {
-      if (this.#character !== " " && this.#character !== "\t" && this.#character !== "\r") return;
+      if (!this.#isWhitespace(this.#character)) return;
     } while ((this.#character = this.#reader.read()));
   }
 

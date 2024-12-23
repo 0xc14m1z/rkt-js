@@ -11,7 +11,6 @@ import {
   IllegalToken,
   LowerThanToken,
   MinusToken,
-  NewLineToken,
   NumberLiteralToken,
   OpenParenthesisToken,
   PlusToken,
@@ -47,8 +46,7 @@ describe("Scanner", () => {
       expect(tokens[6]).toBeInstanceOf(EqualToken);
       expect(tokens[7]).toBeInstanceOf(LowerThanToken);
       expect(tokens[8]).toBeInstanceOf(GreaterThanToken);
-      expect(tokens[9]).toBeInstanceOf(NewLineToken);
-      expect(tokens[10]).toBeInstanceOf(SingleQuoteToken);
+      expect(tokens[9]).toBeInstanceOf(SingleQuoteToken);
     });
 
     it("skips irrelevant white spaces", () => {
@@ -58,8 +56,7 @@ describe("Scanner", () => {
       expect(tokens[1]).toBeInstanceOf(ClosedParenthesisToken);
       expect(tokens[2]).toBeInstanceOf(PlusToken);
       expect(tokens[3]).toBeInstanceOf(MinusToken);
-      expect(tokens[4]).toBeInstanceOf(NewLineToken);
-      expect(tokens[5]).toBeInstanceOf(SingleQuoteToken);
+      expect(tokens[4]).toBeInstanceOf(SingleQuoteToken);
     });
   });
 

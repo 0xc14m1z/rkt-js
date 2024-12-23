@@ -12,7 +12,6 @@ export enum TokenKind {
   Equal,
   LowerThan,
   GreaterThan,
-  NewLine,
   EndOfFile,
   Illegal,
 }
@@ -50,8 +49,6 @@ export class SlashToken extends SimpleToken(TokenKind.Slash, "/") {}
 export class EqualToken extends SimpleToken(TokenKind.Equal, "=") {}
 export class LowerThanToken extends SimpleToken(TokenKind.LowerThan, "<") {}
 export class GreaterThanToken extends SimpleToken(TokenKind.GreaterThan, ">") {}
-
-export class NewLineToken extends SimpleToken(TokenKind.NewLine, "\n") {}
 
 export class IllegalToken extends Token {
   constructor(value: string) {
