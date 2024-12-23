@@ -23,12 +23,12 @@ export class Scanner {
     this.#character = null;
     const tokens: Token[] = [];
 
-    while ((this.#character = this.#reader.read())) {
+    while (this.#consumeCharacter()) {
       let token: Token;
 
       this.#consumeWhiteSpaces();
 
-      switch (this.#character) {
+      switch (this.#character!) {
         case "(":
           token = new OpenParenthesisToken();
           break;
@@ -58,7 +58,7 @@ export class Scanner {
             const identifier = this.#consumeIdentifier();
             token = new IdentifierToken(identifier);
           } else {
-            token = new IllegalToken(this.#character);
+            token = new IllegalToken(this.#character!);
           }
       }
 
@@ -70,9 +70,13 @@ export class Scanner {
     return tokens;
   }
 
+  #consumeCharacter(): string | null {
+    return (this.#character = this.#reader.read());
+  }
+
   #consumeStringLiteral(): string {
     let string = "";
-    while ((this.#character = this.#reader.read())) {
+    while (this.#consumeCharacter()) {
       if (this.#character === '"') break;
       else string += this.#character;
     }
@@ -88,7 +92,7 @@ export class Scanner {
   #consumeWhiteSpaces(): void {
     do {
       if (!this.#isWhitespace(this.#character)) return;
-    } while ((this.#character = this.#reader.read()));
+    } while (this.#consumeCharacter());
   }
 
   #isDigit(character: string | null): boolean {
@@ -103,7 +107,7 @@ export class Scanner {
     let isFloatingPoint = false;
     let number = this.#character!;
 
-    while ((this.#character = this.#reader.read())) {
+    while (this.#consumeCharacter()) {
       if (this.#isDigit(this.#character)) {
         number += this.#character;
       } else if (this.#character === ".") {
@@ -132,7 +136,7 @@ export class Scanner {
   #consumeIdentifier(): string {
     let identifier = this.#character!;
 
-    while ((this.#character = this.#reader.read())) {
+    while (this.#consumeCharacter()) {
       if (this.#canBeIdentifier(this.#character)) {
         identifier += this.#character;
       } else {
