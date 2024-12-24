@@ -1,3 +1,5 @@
+import { Constructable } from "./types";
+
 export enum TokenKind {
   OpenParenthesis,
   ClosedParenthesis,
@@ -72,3 +74,14 @@ export class NumberLiteralToken extends UserToken(TokenKind.NumberLiteral) {
 export class MacroToken extends UserToken(TokenKind.Macro) {}
 export class IdentifierToken extends UserToken(TokenKind.Identifier) {}
 export class CommentToken extends UserToken(TokenKind.Comment) {}
+
+export function isToken(maybeToken: unknown): maybeToken is Token {
+  return maybeToken instanceof Token;
+}
+
+export function isTokenInstance<I extends Constructable<Token>>(
+  maybeToken: unknown,
+  expectedInstance: I,
+): maybeToken is I {
+  return isToken(maybeToken) && maybeToken instanceof expectedInstance;
+}
