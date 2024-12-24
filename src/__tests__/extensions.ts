@@ -41,7 +41,7 @@ export function toBeToken(
 
   if (!isTokenInstance(received, expectedInstance)) {
     return fail(
-      () => `${received} is not an instance of ${expectedInstance.name}`,
+      () => `${received.constructor.name} is not an instance of ${expectedInstance.name}`,
       received,
       expectedInstance,
     );
@@ -49,18 +49,23 @@ export function toBeToken(
 
   if (expectedValue === undefined) {
     return pass(
-      () => `${received} is an instance of ${expectedInstance.name}`,
+      () => `${received.constructor.name} is an instance of ${expectedInstance.name}`,
       received,
       expectedInstance,
     );
   }
 
   if (received.value === expectedValue) {
-    return pass(() => `${received} has value of "${expectedValue}"`, received.value, expectedValue);
+    return pass(
+      () => `${received.constructor.name} has value of "${expectedValue}"`,
+      received.value,
+      expectedValue,
+    );
   }
 
   return fail(
-    () => `${received} has value of "${received.value}" instead of "${expectedValue}"`,
+    () =>
+      `${received.constructor.name} has value of "${received.value}" instead of "${expectedValue}"`,
     received.value,
     expectedValue,
   );
