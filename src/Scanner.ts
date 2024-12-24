@@ -31,8 +31,10 @@ export class Scanner {
       let token: Token;
 
       this.#consumeWhiteSpaces();
+      // consuming whitespaces might consume the rest of the input
+      if (!this.#character) break;
 
-      switch (this.#character!) {
+      switch (this.#character) {
         case "(":
           token = new OpenParenthesisToken();
           break;

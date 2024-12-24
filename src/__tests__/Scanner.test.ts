@@ -34,12 +34,12 @@ describe("Scanner", () => {
     });
 
     it("skips irrelevant white spaces", () => {
-      const tokens = scan("(   )\t+\rif\n'");
+      const tokens = scan("(   )\t+\rif\n' ");
 
       expect(tokens[0]).toBeToken(OpenParenthesisToken);
       expect(tokens[1]).toBeToken(ClosedParenthesisToken);
-      expect(tokens[2]).toBeToken(IdentifierToken);
-      expect(tokens[3]).toBeToken(IdentifierToken);
+      expect(tokens[2]).toBeToken(IdentifierToken, "+");
+      expect(tokens[3]).toBeToken(IdentifierToken, "if");
       expect(tokens[4]).toBeToken(SingleQuoteToken);
     });
   });
