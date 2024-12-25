@@ -7,6 +7,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "compile": "tsc --noEmit",
+    "compile:watch": "npm run compile -- --watch",
     "prebuild": "rimraf dist",
     "build": "tsc"
   },
