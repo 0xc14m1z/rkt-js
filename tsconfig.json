@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "rootDir": "./src",
+    "rootDir": "./",
+    "baseUrl": "./src",
     "noEmit": false,
     "outDir": "./dist",
     "allowSyntheticDefaultImports": false,
@@ -11,6 +12,7 @@
     "strict": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["vitest/globals"]
   }
 }
