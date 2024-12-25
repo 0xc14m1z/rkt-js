@@ -167,7 +167,7 @@ export class Scanner {
 
   #canBeIdentifier(character: string | null): boolean {
     if (character === null) return false;
-    if (this.#isWhitespace(this.#character)) return false;
+    if (this.#isWhitespace(character)) return false;
     const forbidden = ["(", ")", "[", "]", "{", "}", '\"', ",", "'", "`", ";", "#", "|", "\\"];
     return !forbidden.includes(character);
   }
