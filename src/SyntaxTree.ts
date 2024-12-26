@@ -1,4 +1,4 @@
-import { IdentifierToken, NumberLiteralToken, StringLiteralToken } from "./Token";
+import { AtomToken, IdentifierToken } from "./Token";
 
 export type ExpressionNode = AtomNode | FunctionApplicationNode;
 export type Statement = LangNode | ExpressionNode;

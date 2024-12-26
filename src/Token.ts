@@ -64,6 +64,7 @@ function UserToken(kind: TokenKind) {
   };
 }
 
+export type AtomToken = StringLiteralToken | NumberLiteralToken;
 export class StringLiteralToken extends UserToken(TokenKind.StringLiteral) {}
 export class NumberLiteralToken extends UserToken(TokenKind.NumberLiteral) {
   get numericValue(): number {
