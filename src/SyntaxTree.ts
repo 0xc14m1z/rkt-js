@@ -14,7 +14,7 @@ export class LangNode {
 export type AtomToken = StringLiteralToken | NumberLiteralToken;
 
 export class AtomNode {
-  constructor(readonly value: AtomToken) {}
+  constructor(readonly literal: AtomToken) {}
 }
 
 export class FunctionApplicationNode {

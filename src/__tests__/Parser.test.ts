@@ -1,6 +1,7 @@
 import { parse } from "./utils";
-import { LangNode, Program } from "../SyntaxTree";
+import { AtomNode, LangNode, Program } from "../SyntaxTree";
 import { MissingLangStatementError, ParseError } from "../errors";
+import { NumberLiteralToken, StringLiteralToken } from "../Token";
 
 describe("Parser", () => {
   it("returns a Program", () => {
@@ -22,7 +23,6 @@ describe("Parser", () => {
       `;
 
       const test = () => parse(source);
-
       expect(test).toThrowError(MissingLangStatementError);
     });
 
@@ -36,7 +36,6 @@ describe("Parser", () => {
       `;
 
         const test = () => parse(source);
-
         expect(test).toThrowError(ParseError);
       },
     );
@@ -47,10 +46,25 @@ describe("Parser", () => {
         (displayln "using racket")
       `);
 
-      expect(program.statements).toHaveLength(1);
       expect(program.statements[0]).toBeInstanceOf(LangNode);
       const node = program.statements[0] as LangNode;
       expect(node.language.value).toBe("racket");
+    });
+  });
+
+  describe("atom nodes", () => {
+    it("parses literals", () => {
+      const program = parse(`
+        #lang racket
+        123
+        "string"
+      `);
+
+      expect(program.statements[1]).toBeInstanceOf(AtomNode);
+      expect((program.statements[1] as AtomNode).literal).toBeToken(NumberLiteralToken, "123");
+
+      expect(program.statements[2]).toBeInstanceOf(AtomNode);
+      expect((program.statements[2] as AtomNode).literal).toBeToken(StringLiteralToken, "string");
     });
   });
 });
