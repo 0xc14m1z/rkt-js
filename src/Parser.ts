@@ -1,6 +1,6 @@
 import { IdentifierToken, isTokenInstance, MacroToken, Token, TokenKind } from "./Token";
 import { TokenReader } from "./TokenReader";
-import { AtomNode, LangNode, Program, Statement } from "./SyntaxTree";
+import { AtomNode, IdentifierNode, LangNode, Program, Statement } from "./SyntaxTree";
 import { MissingLangStatementError, UnexpectedTokenError } from "./errors";
 
 export class Parser {
@@ -25,6 +25,10 @@ export class Parser {
         case TokenKind.StringLiteral:
         case TokenKind.NumberLiteral:
           statement = new AtomNode(this.#token);
+          statements.push(statement);
+          break;
+        case TokenKind.Identifier:
+          statement = new IdentifierNode(this.#token);
           statements.push(statement);
           break;
       }

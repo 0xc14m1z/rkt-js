@@ -1,7 +1,7 @@
 import { parse } from "./utils";
-import { AtomNode, LangNode, Program } from "../SyntaxTree";
+import { AtomNode, IdentifierNode, LangNode, Program } from "../SyntaxTree";
 import { MissingLangStatementError, UnexpectedTokenError } from "../errors";
-import { NumberLiteralToken, StringLiteralToken } from "../Token";
+import { IdentifierToken, NumberLiteralToken, StringLiteralToken } from "../Token";
 
 describe("Parser", () => {
   it("returns a Program", () => {
@@ -65,6 +65,21 @@ describe("Parser", () => {
 
       expect(program.statements[2]).toBeInstanceOf(AtomNode);
       expect((program.statements[2] as AtomNode).literal).toBeToken(StringLiteralToken, "string");
+    });
+  });
+
+  describe("identifier nodes", () => {
+    it("parses identifiers", () => {
+      const program = parse(`
+        #lang racket
+        identifier
+      `);
+
+      expect(program.statements[1]).toBeInstanceOf(IdentifierNode);
+      expect((program.statements[1] as IdentifierNode).name).toBeToken(
+        IdentifierToken,
+        "identifier",
+      );
     });
   });
 });
