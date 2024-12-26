@@ -1,17 +1,11 @@
-export class ParseError extends Error {
-  constructor(expected: any, received: any) {
-    super(`expected "${expected}", but received "${received}"`);
+export class MissingLangStatementError extends Error {
+  constructor() {
+    super('The first statement must set the language with "#lang <languagename>"');
   }
 }
 
-function SimpleError(message: string) {
-  return class extends Error {
-    constructor() {
-      super(message);
-    }
-  };
+export class UnexpectedTokenError extends Error {
+  constructor(expected: any, received: any) {
+    super(`expected "${expected}", but received ${received ? `"${received}"` : "nothing"}`);
+  }
 }
-
-export class MissingLangStatementError extends SimpleError(
-  'The first statement must set the language with "#lang <languagename>"',
-) {}

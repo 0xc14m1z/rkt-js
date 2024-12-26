@@ -1,6 +1,6 @@
 import { parse } from "./utils";
 import { AtomNode, LangNode, Program } from "../SyntaxTree";
-import { MissingLangStatementError, ParseError } from "../errors";
+import { MissingLangStatementError, UnexpectedTokenError } from "../errors";
 import { NumberLiteralToken, StringLiteralToken } from "../Token";
 
 describe("Parser", () => {
@@ -36,7 +36,7 @@ describe("Parser", () => {
       `;
 
         const test = () => parse(source);
-        expect(test).toThrowError(ParseError);
+        expect(test).toThrowError(UnexpectedTokenError);
       },
     );
 

@@ -1,7 +1,7 @@
 import { IdentifierToken, isTokenInstance, MacroToken, Token, TokenKind } from "./Token";
 import { TokenReader } from "./TokenReader";
 import { AtomNode, LangNode, Program, Statement } from "./SyntaxTree";
-import { MissingLangStatementError, ParseError } from "./errors";
+import { MissingLangStatementError, UnexpectedTokenError } from "./errors";
 
 export class Parser {
   #reader: TokenReader;
@@ -47,7 +47,7 @@ export class Parser {
 
     const language = this.#consumeToken();
     if (!isTokenInstance(language, IdentifierToken))
-      throw new ParseError(IdentifierToken.name, language?.constructor.name ?? "nothing");
+      throw new UnexpectedTokenError(IdentifierToken.name, language?.constructor.name);
 
     return new LangNode(language);
   }
