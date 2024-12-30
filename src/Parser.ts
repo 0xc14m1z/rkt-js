@@ -1,6 +1,22 @@
-import { IdentifierToken, isTokenInstance, MacroToken, Token, TokenKind } from "./Token";
+import {
+  assertToken,
+  ClosedParenthesisToken,
+  IdentifierToken,
+  isTokenInstance,
+  MacroToken,
+  Token,
+  TokenKind,
+} from "./Token";
 import { TokenReader } from "./TokenReader";
-import { AtomNode, IdentifierNode, LangNode, Program, Statement } from "./SyntaxTree";
+import {
+  AtomNode,
+  ExpressionNode,
+  FunctionApplicationNode,
+  IdentifierNode,
+  LangNode,
+  Program,
+  Statement,
+} from "./SyntaxTree";
 import { MissingLangStatementError, UnexpectedTokenError } from "./errors";
 
 export class Parser {
@@ -16,23 +32,8 @@ export class Parser {
 
     statements.push(this.#parseLangStatement());
 
-    while (this.#consumeToken()) {
-      if (!this.#token) break;
-
-      let statement: Statement;
-
-      switch (this.#token.kind) {
-        case TokenKind.StringLiteral:
-        case TokenKind.NumberLiteral:
-          statement = new AtomNode(this.#token);
-          statements.push(statement);
-          break;
-        case TokenKind.Identifier:
-          statement = new IdentifierNode(this.#token);
-          statements.push(statement);
-          break;
-      }
-    }
+    let statement: Statement | null = null;
+    while ((statement = this.#parseExpression())) statements.push(statement);
 
     const program = new Program();
     program.statements = statements;
@@ -54,5 +55,44 @@ export class Parser {
       throw new UnexpectedTokenError(IdentifierToken.name, language?.constructor.name);
 
     return new LangNode(language);
+  }
+
+  #parseExpression(): ExpressionNode | null {
+    while (this.#consumeToken()) {
+      assertToken(this.#token);
+
+      switch (this.#token.kind) {
+        case TokenKind.StringLiteral:
+        case TokenKind.NumberLiteral:
+          return new AtomNode(this.#token);
+        case TokenKind.Identifier:
+          return new IdentifierNode(this.#token);
+        case TokenKind.OpenParenthesis:
+          return this.#parseFunctionApplication();
+        case TokenKind.ClosedParenthesis:
+          return null;
+      }
+    }
+
+    return null;
+  }
+
+  #parseFunctionApplication(): FunctionApplicationNode {
+    const procedure = this.#parseExpression();
+    if (!procedure) throw new UnexpectedTokenError(AtomNode.name);
+
+    const args: ExpressionNode[] = [];
+
+    while (this.#consumeToken()) {
+      if (isTokenInstance(this.#token, ClosedParenthesisToken)) break;
+
+      this.#reader.rollback();
+      const arg = this.#parseExpression();
+
+      if (!arg) break;
+      args.push(arg);
+    }
+
+    return new FunctionApplicationNode(procedure, args);
   }
 }

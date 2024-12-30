@@ -21,7 +21,7 @@ export class IdentifierNode {
 
 export class FunctionApplicationNode {
   constructor(
-    readonly name: IdentifierToken,
+    readonly procedure: ExpressionNode,
     readonly args: ExpressionNode[],
   ) {}
 }

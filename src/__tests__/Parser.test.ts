@@ -1,5 +1,11 @@
 import { parse, scan } from "./utils";
-import { AtomNode, IdentifierNode, LangNode, Program } from "../SyntaxTree";
+import {
+  AtomNode,
+  FunctionApplicationNode,
+  IdentifierNode,
+  LangNode,
+  Program,
+} from "../SyntaxTree";
 import { MissingLangStatementError, UnexpectedTokenError } from "../errors";
 import { IdentifierToken, NumberLiteralToken, StringLiteralToken } from "../Token";
 import { Parser } from "../Parser";
@@ -80,6 +86,112 @@ describe("Parser", () => {
 
       expect(statements[1]).toBeInstanceOf(IdentifierNode);
       expect((statements[1] as IdentifierNode).name).toBeToken(IdentifierToken, "identifier");
+    });
+  });
+
+  describe("function application", () => {
+    it("parses a named function", () => {
+      const statements = parse(`
+        #lang racket
+        (displayln "named function")
+      `);
+
+      expect(statements).toHaveLength(2);
+
+      expect(statements[1]).toBeInstanceOf(FunctionApplicationNode);
+      const fn = statements[1] as FunctionApplicationNode;
+
+      expect(fn.procedure).toBeInstanceOf(IdentifierNode);
+      const procedure = fn.procedure as IdentifierNode;
+      expect(procedure.name).toBeToken(IdentifierToken, "displayln");
+
+      expect(fn.args).toHaveLength(1);
+      expect(fn.args[0]).toBeInstanceOf(AtomNode);
+      const arg = fn.args[0] as AtomNode;
+      expect(arg.literal).toBeToken(StringLiteralToken, "named function");
+    });
+
+    it("parses a function with no arguments", () => {
+      const statements = parse(`
+        #lang racket
+        (define (main) (displayln "no args"))
+        (main)
+      `);
+
+      expect(statements).toHaveLength(3);
+
+      expect(statements[2]).toBeInstanceOf(FunctionApplicationNode);
+      const fn = statements[2] as FunctionApplicationNode;
+
+      expect(fn.procedure).toBeInstanceOf(IdentifierNode);
+      const procedure = fn.procedure as IdentifierNode;
+      expect(procedure.name).toBeToken(IdentifierToken, "main");
+
+      expect(fn.args).toHaveLength(0);
+    });
+
+    it("parses a lambda function application", () => {
+      const statements = parse(`
+        #lang racket
+        ((lambda (x) (* x 2)) 21)
+      `);
+
+      expect(statements).toHaveLength(2);
+
+      // outer function application
+      expect(statements[1]).toBeInstanceOf(FunctionApplicationNode);
+      const fn = statements[1] as FunctionApplicationNode;
+      expect(fn.procedure).toBeInstanceOf(FunctionApplicationNode);
+      expect(fn.args).toHaveLength(1);
+
+      // lambda definition
+      {
+        const lambda = fn.procedure as FunctionApplicationNode;
+
+        // lambda identifier
+        expect(lambda.procedure).toBeInstanceOf(IdentifierNode);
+        const procedure = lambda.procedure as IdentifierNode;
+        expect(procedure.name).toBeToken(IdentifierToken, "lambda");
+
+        // args
+        {
+          expect(lambda.args).toHaveLength(2);
+
+          // parameters definition
+          {
+            expect(lambda.args[0]).toBeInstanceOf(FunctionApplicationNode);
+            const lambdaArg = lambda.args[0] as FunctionApplicationNode;
+            expect(lambdaArg.procedure).toBeInstanceOf(IdentifierNode);
+            const arg = lambdaArg.procedure as IdentifierNode;
+            expect(arg.name).toBeToken(IdentifierToken, "x");
+          }
+
+          // body definition
+          {
+            expect(lambda.args[1]).toBeInstanceOf(FunctionApplicationNode);
+            const lambdaBody = lambda.args[1] as FunctionApplicationNode;
+
+            expect(lambdaBody.procedure).toBeInstanceOf(IdentifierNode);
+            const identifier = lambdaBody.procedure as IdentifierNode;
+            expect(identifier.name).toBeToken(IdentifierToken, "*");
+
+            expect(lambdaBody.args).toHaveLength(2);
+
+            expect(lambdaBody.args[0]).toBeInstanceOf(IdentifierNode);
+            const firstArg = lambdaBody.args[0] as IdentifierNode;
+            expect(firstArg.name).toBeToken(IdentifierToken, "x");
+
+            expect(lambdaBody.args[1]).toBeInstanceOf(AtomNode);
+            const secondArg = lambdaBody.args[1] as AtomNode;
+            expect(secondArg.literal).toBeToken(NumberLiteralToken, "2");
+          }
+        }
+      }
+
+      // argument provided
+      expect(fn.args[0]).toBeInstanceOf(AtomNode);
+      const arg = fn.args[0] as AtomNode;
+      expect(arg.literal).toBeToken(NumberLiteralToken, "21");
     });
   });
 });
