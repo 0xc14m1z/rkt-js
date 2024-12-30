@@ -7,7 +7,7 @@ import {
   Token,
   TokenKind,
 } from "./Token";
-import { TokenReader } from "./TokenReader";
+import { TokenReader } from "./Reader";
 import {
   AtomNode,
   ExpressionNode,

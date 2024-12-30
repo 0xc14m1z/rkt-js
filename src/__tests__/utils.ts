@@ -1,5 +1,5 @@
 import { Token } from "../Token";
-import { StringReader } from "../StringReader";
+import { StringReader } from "../Reader";
 import { Scanner } from "../Scanner";
 import { Statement } from "../SyntaxTree";
 import { Parser } from "../Parser";
