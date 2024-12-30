@@ -1,7 +1,12 @@
-import { IReader } from "./IReader";
 import { Token } from "./Token";
 
-export abstract class Reader<O, I extends ArrayLike<O>> implements IReader<O> {
+export interface IReader<T> {
+  read(): T | null;
+  peek(): T | null;
+  rollback(): void;
+}
+
+abstract class Reader<O, I extends ArrayLike<O>> implements IReader<O> {
   protected readonly input: I;
   #position: number = 0;
 

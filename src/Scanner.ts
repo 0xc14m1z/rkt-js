@@ -1,4 +1,3 @@
-import { IReader } from "./IReader";
 import {
   ClosedParenthesisToken,
   Token,
@@ -14,6 +13,7 @@ import {
   ClosedBracketToken,
   MacroToken,
 } from "./Token";
+import { IReader } from "./Reader";
 
 export class Scanner {
   readonly #reader: IReader<string>;
