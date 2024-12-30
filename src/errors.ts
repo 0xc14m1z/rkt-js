@@ -5,7 +5,7 @@ export class MissingLangStatementError extends Error {
 }
 
 export class UnexpectedTokenError extends Error {
-  constructor(expected: any, received: any) {
+  constructor(expected: any, received?: any) {
     super(`expected "${expected}", but received ${received ? `"${received}"` : "nothing"}`);
   }
 }
