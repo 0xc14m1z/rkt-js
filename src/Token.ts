@@ -86,3 +86,9 @@ export function isTokenInstance<I extends Constructable<Token>>(
 ): maybeToken is I {
   return isToken(maybeToken) && maybeToken instanceof expectedInstance;
 }
+
+export function assertToken<T extends Token>(maybeToken: T | null): asserts maybeToken is T {
+  if (!isToken(maybeToken)) {
+    throw new Error("Expected token, got nothing.");
+  }
+}
