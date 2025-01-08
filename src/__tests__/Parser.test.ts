@@ -51,7 +51,7 @@ describe("Parser", () => {
     );
 
     it("parses the correct language", () => {
-      const statements = parse(`
+      const { statements } = parse(`
         #lang racket
         (displayln "using racket")
       `);
@@ -64,7 +64,7 @@ describe("Parser", () => {
 
   describe("atom nodes", () => {
     it("parses literals", () => {
-      const statements = parse(`
+      const { statements } = parse(`
         #lang racket
         123
         "string"
@@ -79,7 +79,7 @@ describe("Parser", () => {
 
   describe("identifier nodes", () => {
     it("parses identifiers", () => {
-      const statements = parse(`
+      const { statements } = parse(`
         #lang racket
         identifier
       `);
@@ -91,7 +91,7 @@ describe("Parser", () => {
 
   describe("function application", () => {
     it("parses a named function", () => {
-      const statements = parse(`
+      const { statements } = parse(`
         #lang racket
         (displayln "named function")
       `);
@@ -112,7 +112,7 @@ describe("Parser", () => {
     });
 
     it("parses a function with no arguments", () => {
-      const statements = parse(`
+      const { statements } = parse(`
         #lang racket
         (define (main) (displayln "no args"))
         (main)
@@ -131,7 +131,7 @@ describe("Parser", () => {
     });
 
     it("parses a lambda function application", () => {
-      const statements = parse(`
+      const { statements } = parse(`
         #lang racket
         ((lambda (x) (* x 2)) 21)
       `);

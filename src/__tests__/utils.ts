@@ -1,7 +1,7 @@
 import { Token } from "../Token";
 import { StringReader } from "../Reader";
 import { Scanner } from "../Scanner";
-import { Statement } from "../SyntaxTree";
+import { Program } from "../SyntaxTree";
 import { Parser } from "../Parser";
 
 export function scan(source: string): Token[] {
@@ -10,8 +10,8 @@ export function scan(source: string): Token[] {
   return scanner.scan();
 }
 
-export function parse(source: string): Statement[] {
+export function parse(source: string): Program {
   const tokens = scan(source);
   const parser = new Parser(tokens);
-  return parser.parse().statements;
+  return parser.parse();
 }
